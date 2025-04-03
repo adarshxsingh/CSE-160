@@ -14,7 +14,7 @@ function main() {
   window.ctx = canvas.getContext('2d');
   clearCanvas();
 
-  // Draw initial test vector (optional)
+  // Draw initial test vector
   let v1 = new Vector3([2.25, 2.25, 0]);
   drawVector(v1, "red");
 }
@@ -102,6 +102,7 @@ function handleDrawOperationEvent() {
   }
 }
 
+// Angle in Between
 function angleBetween(v1, v2) {
   let dotProduct = Vector3.dot(v1, v2);
   let mag1 = v1.magnitude();
@@ -118,6 +119,7 @@ function angleBetween(v1, v2) {
   console.log("Angle between v1 and v2:", angleDeg.toFixed(2), "degrees");
 }
 
+// Area of Triangle
 function areaTriangle(v1, v2) {
   let crossProduct = Vector3.cross(v1, v2);
   let area = 0.5 * crossProduct.magnitude();
