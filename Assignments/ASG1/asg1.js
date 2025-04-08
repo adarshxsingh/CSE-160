@@ -68,15 +68,17 @@ function renderAllShapes() {
 
   for (const shape of shapesList) {
     gl.uniform4f(u_FragColor, ...shape.color);
-    gl.uniform1f(u_Size, shape.size);
+    gl.uniform1f(u_Size, shape.size || 10);
 
     if (shape.type === 'triangle') {
       drawTriangle(shape);
     } else if (shape.type === 'circle') {
       drawCircle(shape);
+    } else if (shape.type === 'customTriangle') {
+      drawCustomTriangle(shape);
     } else {
       gl.vertexAttrib3f(a_Position, shape.x, shape.y, 0.0);
-      gl.drawArrays(gl.POINTS, 0, 1); // Default fallback (point)
+      gl.drawArrays(gl.POINTS, 0, 1);
     }
   }
 }
@@ -86,9 +88,9 @@ function drawTriangle(shape) {
   const size = shape.size / 100; // Scale size for triangle vertices
 
   const vertices = new Float32Array([
-    x, y + size,        // top vertex
-    x - size, y - size, // bottom left
-    x + size, y - size  // bottom right
+    x, y + size,
+    x - size, y - size,
+    x + size, y - size
   ]);
 
   const buffer = gl.createBuffer();
@@ -149,6 +151,58 @@ function setShapeType(type) {
 function clearCanvas() {
   shapesList = [];
   gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+function addBMWMLogo() {
+  const logoTriangles = [
+    // Light Blue Stripe (slanted RIGHT and long)
+    { verts: [-0.8, 0.6, -0.7, -0.4, -0.6, 0.6], color: [0.0, 0.5, 1.0, 1.0] },
+    { verts: [-0.9, -0.4, -0.7, -0.4, -0.8, 0.6], color: [0.0, 0.5, 1.0, 1.0] },
+    
+    // Dark Blue Stripe
+    { verts: [-0.6, 0.6, -0.5, -0.4, -0.4, 0.6], color: [0.0, 0.0, 0.6, 1.0] },
+    { verts: [-0.7, -0.4, -0.5, -0.4, -0.6, 0.6], color: [0.0, 0.0, 0.6, 1.0] },
+
+    // Red Stripe
+    { verts: [-0.4, 0.6, -0.3, -0.4, -0.2, 0.6], color: [1.0, 0.0, 0.0, 1.0] },
+    { verts: [-0.5, -0.4, -0.3, -0.4, -0.4, 0.6], color: [1.0, 0.0, 0.0, 1.0] },
+  
+    // White "M" - right of red stripe
+    { verts: [-0.2, 0.6, -0.1, -0.4, 0.0, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
+    { verts: [-0.3, -0.4, -0.1, -0.4, -0.2, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
+
+    // White "M" - 2nd line
+    { verts: [-0.05, 0.6, -0.05, -0.4, 0.1, -0.4], color: [1.0, 1.0, 1.0, 1.0] },
+    { verts: [-0.05, 0.6, 0.1, 0.6, 0.1, -0.4], color: [1.0, 1.0, 1.0, 1.0] },
+
+    // White "M" - 3rd line
+    { verts: [0.15, 0.6, 0.25, -0.4, 0.35, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
+    { verts: [0.05, -0.4, 0.25, -0.4, 0.15, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
+
+    // White "M" - 4th line
+    { verts: [0.3, 0.6, 0.3, -0.4, 0.5, -0.4], color: [1.0, 1.0, 1.0, 1.0] },
+    { verts: [0.3, 0.6, 0.5, 0.6, 0.5, -0.4], color: [1.0, 1.0, 1.0, 1.0] }
+];
+
+  for (const tri of logoTriangles) {
+    shapesList.push({
+      type: 'customTriangle',
+      vertices: tri.verts,
+      color: tri.color
+    });
+  }
+
+  renderAllShapes();
+}
+
+function drawCustomTriangle(shape) {
+  const vertices = new Float32Array(shape.vertices);
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(a_Position);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
 

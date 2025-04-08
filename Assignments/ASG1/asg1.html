@@ -24,6 +24,7 @@
     <button onclick="setShapeType('square')">Square</button>
     <button onclick="setShapeType('triangle')">Triangle</button>
     <button onclick="setShapeType('circle')">Circle</button>
+    <button onclick="addBMWMLogo()">Draw BMW M Logo</button>
     <button onclick="clearCanvas()">Clear Canvas</button>
   </div>
 
@@ -34,8 +35,12 @@
   </div>
 
   <div>
-    <label>Size: <input type="range" id="sizeSlider" min="1" max="40" step="1" value="10"></label>
-    <label>Circle Segments: <input type="range" id="segmentSlider" min="3" max="30" step="1" value="10"></label>
+    <label>Shape Size: <input type="range" id="sizeSlider" min="1" max="40" step="1" value="10"></label>
+    <label>(Circles) Segment Count: <input type="range" id="segmentSlider" min="3" max="30" step="1" value="10"></label>
   </div>
+
+<h3>My Sketch for the BMW M Symbol:</h3>
+<img src="m_logo_sketch.jpg" alt="Sketch of M logo" width="300">
+
 </body>
 </html>
