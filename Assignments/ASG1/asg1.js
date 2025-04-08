@@ -155,7 +155,7 @@ function clearCanvas() {
 
 function addBMWMLogo() {
   const logoTriangles = [
-    // Light Blue Stripe (slanted RIGHT and long)
+    // Light Blue Stripe
     { verts: [-0.8, 0.6, -0.7, -0.4, -0.6, 0.6], color: [0.0, 0.5, 1.0, 1.0] },
     { verts: [-0.9, -0.4, -0.7, -0.4, -0.8, 0.6], color: [0.0, 0.5, 1.0, 1.0] },
     
@@ -167,7 +167,7 @@ function addBMWMLogo() {
     { verts: [-0.4, 0.6, -0.3, -0.4, -0.2, 0.6], color: [1.0, 0.0, 0.0, 1.0] },
     { verts: [-0.5, -0.4, -0.3, -0.4, -0.4, 0.6], color: [1.0, 0.0, 0.0, 1.0] },
   
-    // White "M" - right of red stripe
+    // White "M" - right of red stripe (1st line)
     { verts: [-0.2, 0.6, -0.1, -0.4, 0.0, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
     { verts: [-0.3, -0.4, -0.1, -0.4, -0.2, 0.6], color: [1.0, 1.0, 1.0, 1.0] },
 
