@@ -1,0 +1,46 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ASG2 - Blocky 3D Animal</title>
+</head>
+<body onload="main()">
+  <!-- Canvas Element -->
+  <canvas id="webgl" width="400" height="400">
+    Please use a browser that supports HTML5 canvas.
+  </canvas>
+
+  <!-- Vertex Shader -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    attribute vec4 a_Color;
+    uniform mat4 u_ModelMatrix;
+    uniform mat4 u_ViewMatrix;
+    uniform mat4 u_ProjMatrix;
+    varying vec4 v_Color;
+
+    void main() {
+      gl_Position = u_ProjMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
+      v_Color = a_Color;
+    }
+  </script>
+
+  <!-- Fragment Shader -->
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 v_Color;
+
+    void main() {
+      gl_FragColor = v_Color;
+    }
+  </script>
+
+  <!-- External JS Libraries -->
+  <script src="lib/cuon-matrix-cse160.js"></script>
+
+  <!-- Your ASG2 logic -->
+  <script src="asg2.js"></script>
+</body>
+</html>
