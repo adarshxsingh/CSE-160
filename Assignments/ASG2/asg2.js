@@ -1,3 +1,8 @@
+// Adarsh Singh
+// asing209@ucsc.edu
+// 1930592
+// Assignment 2: Blocky 3D Animal (Medium)
+
 // asg2.js
 
 // Global Variables
@@ -73,114 +78,122 @@ function updateViewMatrix() {
     viewMatrix.setLookAt(eyeX, 0, eyeZ, 0, 0, 0, 0, 1, 0);
   }
 
-function renderScene() {
-    console.log('renderScene called');
-
+  function renderScene() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
     gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
   
+    let baseMatrix = new Matrix4();
+    baseMatrix.rotate(g_globalRotate, 0, 1, 0);
+  
     // Body
-    modelMatrix.setIdentity();
+    modelMatrix.set(baseMatrix);
     modelMatrix.translate(0, 0, 0);
     modelMatrix.scale(1.0, 0.5, 0.5);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
   
     // Head
-    modelMatrix.setIdentity();
+    modelMatrix.set(baseMatrix);
     modelMatrix.translate(0, 0.75, 0);
     modelMatrix.scale(0.5, 0.5, 0.5);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
   
     // Left Leg
-    modelMatrix.setIdentity();
+    modelMatrix.set(baseMatrix);
     modelMatrix.translate(-0.3, -0.5, 0.2);
     modelMatrix.scale(0.2, 0.4, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
   
     // Right Leg
-    modelMatrix.setIdentity();
+    modelMatrix.set(baseMatrix);
     modelMatrix.translate(0.3, -0.5, 0.2);
     modelMatrix.scale(0.2, 0.4, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
   
-    // Tail
-    let tailOffset = 0.2 * Math.sin(g_seconds * 5.0);
-    modelMatrix.setIdentity();
-    modelMatrix.translate(0, 0.0, -0.6);
-    modelMatrix.rotate(tailOffset * 30, 0, 1, 0);
-    modelMatrix.scale(0.1, 0.1, 0.4);
+    // Left Arm
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(-0.6, 0.1, 0);
+    modelMatrix.scale(0.2, 0.3, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-    
-    // Left Ear
-    modelMatrix.setTranslate(-0.2, 1.1, 0);
-    modelMatrix.scale(0.1, 0.2, 0.1);
+  
+    // Right Arm
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0.6, 0.1, 0);
+    modelMatrix.scale(0.2, 0.3, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
-    // Right Ear
-    modelMatrix.setTranslate(0.2, 1.1, 0);
-    modelMatrix.scale(0.1, 0.2, 0.1);
-    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
-    drawCube();
-
+  
     // Snout
-    modelMatrix.setTranslate(0, 0.85, 0.25);  // sticking out from the head
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0, 0.85, 0.25);
     modelMatrix.scale(0.2, 0.2, 0.1);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
-    // Left Arm
-    modelMatrix.setTranslate(-0.6, 0.1, 0);
-    modelMatrix.scale(0.2, 0.3, 0.2);
-    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
-    drawCube();
-
-    // Right Arm
-    modelMatrix.setTranslate(0.6, 0.1, 0);
-    modelMatrix.scale(0.2, 0.3, 0.2);
-    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
-    drawCube();
-
+  
     // Tail
-    modelMatrix.setTranslate(0, 0.0, -0.7);  // sticking behind the body
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0, 0.0, -0.7);
     modelMatrix.scale(0.1, 0.1, 0.3);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
+  
+    // Left Ear
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(-0.2, 1.1, 0);
+    modelMatrix.scale(0.1, 0.2, 0.1);
+    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+    drawCube();
+  
+    // Right Ear
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0.2, 1.1, 0);
+    modelMatrix.scale(0.1, 0.2, 0.1);
+    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+    drawCube();
+  
     // Left Nostril
-    modelMatrix.setTranslate(-0.05, 0.88, 0.31);
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(-0.05, 0.88, 0.31);
     modelMatrix.scale(0.05, 0.05, 0.01);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
+  
     // Right Nostril
-    modelMatrix.setTranslate(0.05, 0.88, 0.31);
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0.05, 0.88, 0.31);
     modelMatrix.scale(0.05, 0.05, 0.01);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
+  
     // Left Eye
-    modelMatrix.setTranslate(-0.1, 1.0, 0.25);
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(-0.1, 1.0, 0.25);
     modelMatrix.scale(0.05, 0.05, 0.01);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
+  
     // Right Eye
-    modelMatrix.setTranslate(0.1, 1.0, 0.25);
+    modelMatrix.set(baseMatrix);
+    modelMatrix.translate(0.1, 1.0, 0.25);
     modelMatrix.scale(0.05, 0.05, 0.01);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
-
   }
 
 // Camera rotation variable
 let g_cameraAngle = 0;
+
+let g_globalRotate = 0;
+
+function onGlobalRotateChange(val) {
+    g_globalRotate = parseFloat(val);
+    renderScene();
+  }
 
 // Key controls
 document.onkeydown = function (ev) {
@@ -242,3 +255,5 @@ function drawCube() {
   // Draw
   gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
 }
+
+  

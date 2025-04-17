@@ -1,3 +1,8 @@
+<!-- Adarsh Singh --> 
+<!-- asing209@ucsc.edu -->
+<!-- 1930592 -->
+<!-- Assignment 2: Blocky 3D Animal (Medium) -->
+
 <!-- index.html -->
 
 <!DOCTYPE html>
@@ -5,12 +10,30 @@
 <head>
   <meta charset="UTF-8">
   <title>ASG2 - Blocky 3D Animal</title>
+
+  <style>
+    .header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+</style>
+
 </head>
+
 <body onload="main()">
+
+  <div class="header">Assignment 2: Blocky 3D Animal (Medium)</div>
+  <div class=>Ermmmm, this is a pig. (trust)</div>
+
   <!-- Canvas Element -->
   <canvas id="webgl" width="400" height="400">
     Please use a browser that supports HTML5 canvas.
   </canvas>
+
+  <br/>
+  <label for="globalRotate">Rotate Animal (Y-axis):</label>
+  <input type="range" id="globalRotate" min="-180" max="180" value="0" oninput="onGlobalRotateChange(this.value)">
 
   <!-- Vertex Shader -->
   <script id="vertex-shader" type="x-shader/x-vertex">
