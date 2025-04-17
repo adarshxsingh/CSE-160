@@ -84,7 +84,8 @@ function updateViewMatrix() {
     gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
   
     let baseMatrix = new Matrix4();
-    baseMatrix.rotate(g_globalRotate, 0, 1, 0);
+    baseMatrix.rotate(g_xRotate, 1, 0, 0);     // tilt forward/back
+    baseMatrix.rotate(g_globalRotate, 0, 1, 0); // spin left/right
   
     // Body
     modelMatrix.set(baseMatrix);
@@ -189,11 +190,17 @@ function updateViewMatrix() {
 let g_cameraAngle = 0;
 
 let g_globalRotate = 0;
-
 function onGlobalRotateChange(val) {
     g_globalRotate = parseFloat(val);
     renderScene();
   }
+
+let g_xRotate = 0;
+function onXRotateChange(val) {
+  g_xRotate = parseFloat(val);
+  renderScene();
+}
+
 
 // Key controls
 document.onkeydown = function (ev) {
