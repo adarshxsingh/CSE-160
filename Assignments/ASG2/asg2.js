@@ -116,18 +116,24 @@ function updateViewMatrix() {
     drawCube();
   
     // Left Arm
+    // Left Arm (manual wave)
     modelMatrix.set(baseMatrix);
     modelMatrix.translate(-0.6, 0.1, 0);
+    modelMatrix.rotate(g_leftArmAngle, 1, 0, 0);  // wave up/down
     modelMatrix.scale(0.2, 0.3, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
+
   
     // Right Arm
+    // Right Arm (manual wave)
     modelMatrix.set(baseMatrix);
     modelMatrix.translate(0.6, 0.1, 0);
+    modelMatrix.rotate(g_rightArmAngle, 1, 0, 0);  // wave up/down
     modelMatrix.scale(0.2, 0.3, 0.2);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
+
   
     // Snout
     modelMatrix.set(baseMatrix);
@@ -137,11 +143,16 @@ function updateViewMatrix() {
     drawCube();
   
     // Tail
+    // Tail (wagging animation)
+    let tailAngle = 30 * Math.sin(g_seconds * g_tailSpeed);  // wag back and forth
+
     modelMatrix.set(baseMatrix);
     modelMatrix.translate(0, 0.0, -0.7);
+    modelMatrix.rotate(tailAngle, 0, 1, 0); // wag side-to-side
     modelMatrix.scale(0.1, 0.1, 0.3);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     drawCube();
+
   
     // Left Ear
     modelMatrix.set(baseMatrix);
@@ -201,17 +212,45 @@ function onXRotateChange(val) {
   renderScene();
 }
 
+let g_tailSpeed = 5;
+function onTailSpeedChange(val) {
+  g_tailSpeed = parseFloat(val);
+}
+
+
+let g_leftArmAngle = 0;
+let g_rightArmAngle = 0;
+
 
 // Key controls
 document.onkeydown = function (ev) {
+  // Prevent arrow key scrolling
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(ev.key)) {
+    ev.preventDefault();
+  }
+
   if (ev.key === 'ArrowLeft') {
     g_cameraAngle -= 5;
   } else if (ev.key === 'ArrowRight') {
     g_cameraAngle += 5;
+  } else if (ev.key === 'ArrowUp') {
+    g_xRotate = Math.min(g_xRotate + 5, 90);  // tilt forward
+  } else if (ev.key === 'ArrowDown') {
+    g_xRotate = Math.max(g_xRotate - 5, -90); // tilt backward
+  } else if (ev.key === 'q' || ev.key === 'Q') {
+    g_leftArmAngle = Math.min(g_leftArmAngle + 5, 90);
+  } else if (ev.key === 'a' || ev.key === 'A') {
+    g_leftArmAngle = Math.max(g_leftArmAngle - 5, 0);
+  } else if (ev.key === 'e' || ev.key === 'E') {
+    g_rightArmAngle = Math.min(g_rightArmAngle + 5, 90);
+  } else if (ev.key === 'd' || ev.key === 'D') {
+    g_rightArmAngle = Math.max(g_rightArmAngle - 5, 0);
   }
+
   updateViewMatrix();
   renderScene();
 };
+
 
 function drawCube() {
   // Define cube vertices (position and color)
