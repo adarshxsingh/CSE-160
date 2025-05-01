@@ -98,6 +98,13 @@ let g_pitch = 0;   // vertical angle in degrees
 //Map Changer
 let g_useTerrain = false;
 
+//Surivival Game
+let g_isGameActive = false;
+let g_gameStartTime = 0;
+let g_gameOver = false;
+let g_zombies = [];
+
+
 function setupCanvas() {
     // Retrieve <canvas> element
     canvas = document.getElementById('webgl');
@@ -341,6 +348,20 @@ function main() {
       g_useTerrain = !g_useTerrain;
       renderAllShapes();
    };
+
+   document.getElementById("startGameButton").onclick = function () {
+      g_isGameActive = true;
+      g_gameOver = false;
+      g_gameStartTime = performance.now() / 1000;
+    
+      // Create 3 zombies in different spots
+      g_zombies = [
+        { x: 0, z: 0 },
+        { x: 10, z: -10 },
+        { x: -10, z: 8 }
+      ];
+    };
+    
   
   
     requestAnimationFrame(tick);
@@ -363,6 +384,38 @@ function updateAnimation() {
     if (g_BoolTailAnimation) {
         g_tails_animation = 5 * Math.sin(g_seconds);
     }
+    
+
+    if (g_isGameActive && !g_gameOver) {
+      let elapsed = performance.now() / 1000 - g_gameStartTime;
+    
+      if (elapsed > 30) {
+        g_isGameActive = false;
+        alert("🎉 You survived the zombie attack!");
+      }
+    
+      const playerX = g_camera.eye.elements[0];
+      const playerZ = g_camera.eye.elements[2];
+    
+      for (let zombie of g_zombies) {
+        const dx = playerX - zombie.x;
+        const dz = playerZ - zombie.z;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+    
+        if (dist < 1.0) {
+          g_isGameActive = false;
+          g_gameOver = true;
+          alert("💀 You were caught by a zombie!");
+          break;
+        }
+    
+        // Move zombie toward player
+        zombie.x += (dx / dist) * 0.02;
+        zombie.z += (dz / dist) * 0.02;
+      }
+    }
+    
+    
 }
 
 function keydown(ev) {
@@ -451,12 +504,33 @@ function renderAllShapes() {
     } else {
       drawTerrain(); // ✅ draw voxel terrain
     }
+
+    if (g_isGameActive) {
+      for (let zombie of g_zombies) {
+        const dx = g_camera.eye.elements[0] - zombie.x;
+        const dz = g_camera.eye.elements[2] - zombie.z;
+        const yaw = Math.atan2(dx, dz) * 180 / Math.PI;
+        let z = new Zombie(zombie.x, -0.75, zombie.z, yaw, g_seconds);
+        z.render();
+      }
+    }
+    
+    
+    
     
 }
 
 function SendTextToHTML(text, htmlID) {
     var htmlElm = document.getElementById(htmlID);
     htmlElm.innerHTML = text;
+
+
+
+    if (g_isGameActive && !g_gameOver) {
+      const t = Math.max(0, 30 - (performance.now() / 1000 - g_gameStartTime));
+      document.getElementById("fps").innerHTML = "⏱️ " + Math.floor(t) + "s left";
+    }
+    
 }
 
 function drawSetting() {
