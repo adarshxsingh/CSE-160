@@ -3,8 +3,6 @@
 <!-- 1930592 -->
 <!-- Assignment 3: Creating a Virtual World (Hard) -->
 
-<!-- asg3.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,12 +11,16 @@
   <style>
     body {
       font-family: sans-serif;
+      margin: 0;
+      padding: 10px;
+      max-height: 100vh;
+      overflow: hidden;
     }
 
     .header {
       font-size: 20px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .row {
@@ -41,12 +43,18 @@
       display: flex;
       justify-content: center;
       gap: 60px;
-      margin-top: 30px;
+      margin-top: 10px;
+      font-size: 14px;
     }
 
     .controls-column {
       flex: 1;
       max-width: 300px;
+    }
+
+    .controls-column ul {
+      margin: 5px 0;
+      padding-left: 20px;
     }
   </style>
 </head>
@@ -58,12 +66,12 @@
   <div class="row">
     <!-- Canvas -->
     <div class="left-column">
-      <canvas id="webgl" width="600" height="600">
+      <canvas id="webgl" width="512" height="512">
         Please use a browser that supports "canvas"
       </canvas>
     </div>
 
-    <!-- Sidebar with FPS and Sheep button -->
+    <!-- Sidebar with FPS and Buttons -->
     <div class="right-column">
       <p id="fps">FPS: --</p>
       <button id="spawnSheepButton">🐑 Summon Sheep</button>
@@ -71,9 +79,8 @@
     </div>
   </div>
 
-  <!-- Side-by-side control columns below the canvas -->
+  <!-- Controls section -->
   <div class="controls-row">
-    <!-- Required controls -->
     <div class="controls-column">
       <p><b>Controls (Required):</b></p>
       <ul>
@@ -87,7 +94,6 @@
       </ul>
     </div>
 
-    <!-- Extra controls -->
     <div class="controls-column">
       <p><b>Extra Controls:</b></p>
       <ul>
@@ -107,7 +113,7 @@
   <script src="RenderAnimal.js"></script>
   <script src="FourPyramid.js"></script>
   <script src="Triangle.js"></script>
-  <!--<script src="Square.js"></script> -->
+  <!-- <script src="Square.js"></script> -->
   <script src="Point.js"></script>
   <script src="Camera.js"></script>
   <script src="Cube.js"></script>
