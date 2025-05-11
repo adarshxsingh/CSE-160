@@ -221,7 +221,7 @@ function initTextures() {
     };
 
     if (g_globool === true) {
-        image0.src = 'tu.jpeg';
+        image0.src = 'dirt.jpeg';
     }
 
     // image 1
@@ -250,7 +250,7 @@ function initTextures() {
         sendTextureToTEXTURE2(image2);
     };
     if (g_globool === true) {
-        image2.src = 'cao.png';
+        image2.src = 'grass.png';
     }
 
 }
