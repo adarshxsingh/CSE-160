@@ -361,9 +361,6 @@ function main() {
         { x: -10, z: 8 }
       ];
     };
-    
-  
-  
     requestAnimationFrame(tick);
 }
 
@@ -414,8 +411,6 @@ function updateAnimation() {
         zombie.z += (dz / dist) * 0.02;
       }
     }
-    
-    
 }
 
 function keydown(ev) {
@@ -514,23 +509,16 @@ function renderAllShapes() {
         z.render();
       }
     }
-    
-    
-    
-    
 }
 
 function SendTextToHTML(text, htmlID) {
     var htmlElm = document.getElementById(htmlID);
     htmlElm.innerHTML = text;
 
-
-
     if (g_isGameActive && !g_gameOver) {
       const t = Math.max(0, 30 - (performance.now() / 1000 - g_gameStartTime));
       document.getElementById("fps").innerHTML = "⏱️ " + Math.floor(t) + "s left";
     }
-    
 }
 
 function drawSetting() {
