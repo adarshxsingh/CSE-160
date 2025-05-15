@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CSE160 Assignment 4</title>
+  <style>canvas { border: 1px solid black; }</style>
+</head>
+<body onload="main()">
+  <canvas id="webgl" width="800" height="600">Please use a browser that supports canvas</canvas>
+
+  <p id="fps">FPS: 0</p>
+
+  <button id="Normal_On">Toggle Normals</button>
+  <button id="Light_On">Light On</button>
+  <button id="Light_Off">Light Off</button>
+  <button id="light_animation_On">Light Animation On</button>
+  <button id="light_animation_Off">Light Animation Off</button>
+  <button id="Spot_Light_on">Spot Light On</button>
+  <button id="Spot_Light_off">Spot Light Off</button>
+
+  <p>Light Position</p>
+  X: <input id="lightSlideX" type="range" min="0" max="300" value="100" />
+  Y: <input id="lightSlideY" type="range" min="0" max="300" value="150" />
+  Z: <input id="lightSlideZ" type="range" min="0" max="300" value="120" />
+
+  <p>Light Color</p>
+  R: <input id="lightRed" type="range" min="0" max="255" value="255" />
+  G: <input id="lightGreen" type="range" min="0" max="255" value="255" />
+  B: <input id="lightBlue" type="range" min="0" max="255" value="255" />
+
+  <p>Spotlight Position</p>
+  X: <input id="SpotlightSlideX" type="range" min="0" max="300" value="100" />
+  Y: <input id="SpotlightSlideY" type="range" min="0" max="300" value="150" />
+  Z: <input id="SpotlightSlideZ" type="range" min="0" max="300" value="120" />
+
+  <button id="CallTheSheep">Toggle Sheep</button>
+  <button id="Animate">Toggle Sheep Animation</button>
+  <button id="Random">Toggle Maze</button>
+  <button id="Map_1">Toggle Map</button>
+
+  <p><b>Keyboard Controls:</b></p>
+  W/A/S/D: Move<br>
+  Q/E: Rotate<br>
+  Z/X: Move Up/Down
+
+  <script src="cuon-matrix-cse160.js"></script>
+  <script src="webgl-debug.js"></script>
+  <script src="cuon-utils.js"></script>
+  <script src="webgl-utils.js"></script>
+
+  <script src="Camera.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="RenderAnimal.js"></script>
+
+  <script src="asg4.js"></script>
+</body>
+</html>
