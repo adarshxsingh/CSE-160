@@ -1,118 +1,85 @@
-class Camera {
-    constructor() {
-      this.eye = new Vector3([8, 1.2, 5]);
-      this.at = new Vector3([8, 0, 100]);
-      this.up = new Vector3([0, 1, 0]);
+// Adarsh Singh
+// asing209@ucsc.edu
+// 1930592
+// Assignment 4: Lighting (Medium)
+
+// Camera.js
+
+class Camera{
+    constructor(){
+        this.eye = new Vector3([10,0.6,3]);
+        this.at  = new Vector3([10,0,100]);
+        this.up  = new Vector3([0,1,0]);
     }
-  
-    forward() {
-      const dir = this.at.sub(this.eye).normalize();
-      const targetX = this.eye.elements[0] + dir.elements[0] * 0.2;
-      const targetZ = this.eye.elements[2] + dir.elements[2] * 0.2;
-  
-      const height = this._getTerrainHeight(targetX, targetZ);
-      if (height !== null) {
-        const y = height + 1.0; // Add player height above terrain
-        this.eye = new Vector3([targetX, y, targetZ]);
-        this.at = new Vector3([
-          targetX + dir.elements[0],
-          y,
-          targetZ + dir.elements[2]
-        ]);
-      }
+
+    forward(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var f = atCopy.sub(eyeCopy);
+        f = f.normalize();
+        this.eye = this.eye.add(f);
+        this.at  = this.at.add(f);
     }
-  
-    backward() {
-      const dir = this.at.sub(this.eye).normalize();
-      const targetX = this.eye.elements[0] - dir.elements[0] * 0.2;
-      const targetZ = this.eye.elements[2] - dir.elements[2] * 0.2;
-  
-      const height = this._getTerrainHeight(targetX, targetZ);
-      if (height !== null) {
-        const y = height + 1.0;
-        this.eye = new Vector3([targetX, y, targetZ]);
-        this.at = new Vector3([
-          targetX + dir.elements[0],
-          y,
-          targetZ + dir.elements[2]
-        ]);
-      }
+
+    backward(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var f = atCopy.sub(eyeCopy);
+        f = f.normalize();
+        this.at  = this.at.sub(f);
+        this.eye = this.eye.sub(f);
     }
-  
-    left() {
-      const dir = this.at.sub(this.eye).normalize();
-      const strafe = Vector3.cross(new Vector3([0, 1, 0]), dir).normalize();
-      const targetX = this.eye.elements[0] + strafe.elements[0] * 0.2;
-      const targetZ = this.eye.elements[2] + strafe.elements[2] * 0.2;
-  
-      const height = this._getTerrainHeight(targetX, targetZ);
-      if (height !== null) {
-        const y = height + 1.0;
-        this.eye = new Vector3([targetX, y, targetZ]);
-        this.at = new Vector3([
-          targetX + dir.elements[0],
-          y,
-          targetZ + dir.elements[2]
-        ]);
-      }
+
+    left(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var left_move = atCopy.sub(eyeCopy);
+        left_move = left_move.normalize();
+        left_move = left_move.mul(-1);
+        var s = Vector3.cross(left_move, this.up);
+        s = s.normalize();
+        this.at  = this.at.add(s);
+        this.eye = this.eye.add(s);
     }
-  
-    right() {
-      const dir = this.at.sub(this.eye).normalize();
-      const strafe = Vector3.cross(dir, new Vector3([0, 1, 0])).normalize();
-      const targetX = this.eye.elements[0] + strafe.elements[0] * 0.2;
-      const targetZ = this.eye.elements[2] + strafe.elements[2] * 0.2;
-  
-      const height = this._getTerrainHeight(targetX, targetZ);
-      if (height !== null) {
-        const y = height + 1.0;
-        this.eye = new Vector3([targetX, y, targetZ]);
-        this.at = new Vector3([
-          targetX + dir.elements[0],
-          y,
-          targetZ + dir.elements[2]
-        ]);
-      }
+
+    right(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var upCopy  = new Vector3(this.up.elements);
+        var move_right = atCopy.sub(eyeCopy);
+        move_right = move_right.normalize();
+        var s = Vector3.cross(move_right, upCopy);
+        s = s.normalize();
+        this.at  = this.at.add(s);
+        this.eye = this.eye.add(s);
     }
-  
-    rotRight() {
-      const f = this.at.sub(this.eye);
-      const rotationMatrix = new Matrix4();
-      rotationMatrix.setRotate(-5, ...this.up.elements);
-      const f_prime = rotationMatrix.multiplyVector3(f);
-      this.at = f_prime.add(this.eye);
+
+    rotRight(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var f = atCopy.sub(eyeCopy);
+        var rotationMatrix = new Matrix4();
+        rotationMatrix.setRotate(-5, this.up.elements[0], this.up.elements[1], this.up.elements[2]);
+        var f_prime = rotationMatrix.multiplyVector3(f);
+        this.at = f_prime.add(this.eye);
     }
-  
-    rotLeft() {
-      const f = this.at.sub(this.eye);
-      const rotationMatrix = new Matrix4();
-      rotationMatrix.setRotate(5, ...this.up.elements);
-      const f_prime = rotationMatrix.multiplyVector3(f);
-      this.at = f_prime.add(this.eye);
+
+    rotLeft(){
+        var atCopy  = new Vector3(this.at.elements);
+        var eyeCopy = new Vector3(this.eye.elements);
+        var f = atCopy.sub(eyeCopy);
+        var rotationMatrix = new Matrix4();
+        rotationMatrix.setRotate(5, this.up.elements[0], this.up.elements[1], this.up.elements[2]);
+        var f_prime = rotationMatrix.multiplyVector3(f);
+        this.at = f_prime.add(this.eye);
     }
-  
-    upward() {
-      this.eye.elements[1] += 1;
-      this.at.elements[1] += 1;
+    upward(){
+        this.eye.elements[1] += 1;
+        this.at.elements[1]  += 1;
     }
-  
-    downward() {
-      this.eye.elements[1] -= 1;
-      this.at.elements[1] -= 1;
+    downward(){
+        this.eye.elements[1] -= 1;
+        this.at.elements[1]  -= 1;
     }
-  
-    _getTerrainHeight(x, z) {
-      const col = Math.floor(x + 16);
-      const row = Math.floor(z + 16);
-  
-      if (
-        row < 0 || row >= terrainMap.length ||
-        col < 0 || col >= terrainMap[0].length
-      ) {
-        return null;
-      }
-  
-      return terrainMap[row][col] * 1.0; // each cube = 1 unit high
-    }
-  }
-  
+
+}

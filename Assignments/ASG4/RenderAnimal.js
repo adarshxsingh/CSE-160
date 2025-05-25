@@ -1,3 +1,10 @@
+// Adarsh Singh
+// asing209@ucsc.edu
+// 1930592
+// Assignment 4: Lighting (Medium)
+
+// RenderAnimal.js
+
 function drawthesheep() {
     var Sheep_white = [1, 1, 1, 1];
     var face_color = [1, .9, .65, 1.0];

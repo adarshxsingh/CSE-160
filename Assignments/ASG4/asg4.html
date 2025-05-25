@@ -1,59 +1,151 @@
+<!-- Adarsh Singh --> 
+<!-- asing209@ucsc.edu -->
+<!-- 1930592 -->
+<!-- Assignment 4: Lighting (Medium) -->
+
+<!-- asg3.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CSE160 Assignment 4</title>
-  <style>canvas { border: 1px solid black; }</style>
+  <title>Assignment 4: Lighting and Animation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 20px;
+    }
+
+    #main-container {
+      display: flex;
+      flex-direction: row;
+      height: calc(100vh - 80px);
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 650px;
+      height: 650px;
+      border: 1px solid black;
+      margin: 20px;
+    }
+
+    .ui-column {
+      width: 300px;
+      height: 100%;
+      overflow-y: auto;
+      padding: 15px;
+      background-color: #f8f8f8;
+    }
+
+    .ui-column h2,
+    .section-title {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    button, input[type="range"] {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 0;
+    }
+
+    #fps {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body onload="main()">
-  <canvas id="webgl" width="800" height="600">Please use a browser that supports canvas</canvas>
 
-  <p id="fps">FPS: 0</p>
+  <!-- Title Header -->
+  <h1>Assignment 4: Lighting (Medium)</h1>
 
-  <button id="Normal_On">Toggle Normals</button>
-  <button id="Light_On">Light On</button>
-  <button id="Light_Off">Light Off</button>
-  <button id="light_animation_On">Light Animation On</button>
-  <button id="light_animation_Off">Light Animation Off</button>
-  <button id="Spot_Light_on">Spot Light On</button>
-  <button id="Spot_Light_off">Spot Light Off</button>
+  <!-- Canvas and Controls Layout -->
+  <div id="main-container">
 
-  <p>Light Position</p>
-  X: <input id="lightSlideX" type="range" min="0" max="300" value="100" />
-  Y: <input id="lightSlideY" type="range" min="0" max="300" value="150" />
-  Z: <input id="lightSlideZ" type="range" min="0" max="300" value="120" />
+    <!-- Left: Canvas -->
+    <canvas id="webgl" width="650" height="650">Please use a browser that supports canvas.</canvas>
 
-  <p>Light Color</p>
-  R: <input id="lightRed" type="range" min="0" max="255" value="255" />
-  G: <input id="lightGreen" type="range" min="0" max="255" value="255" />
-  B: <input id="lightBlue" type="range" min="0" max="255" value="255" />
+    <!-- Middle: Lighting & Shader UI -->
+    <div class="ui-column">
+      <div id="fps">FPS: 0</div>
 
-  <p>Spotlight Position</p>
-  X: <input id="SpotlightSlideX" type="range" min="0" max="300" value="100" />
-  Y: <input id="SpotlightSlideY" type="range" min="0" max="300" value="150" />
-  Z: <input id="SpotlightSlideZ" type="range" min="0" max="300" value="120" />
+      <h2>Lighting</h2>
+      <button id="Normal_On">Toggle Normals</button>
+      <button id="Light_On">Light On</button>
+      <button id="Light_Off">Light Off</button>
+      <button id="light_animation_On">Light Animation On</button>
+      <button id="light_animation_Off">Light Animation Off</button>
+      <button id="Spot_Light_on">Spot Light On</button>
+      <button id="Spot_Light_off">Spot Light Off</button>
 
-  <button id="CallTheSheep">Toggle Sheep</button>
-  <button id="Animate">Toggle Sheep Animation</button>
-  <button id="Random">Toggle Maze</button>
-  <button id="Map_1">Toggle Map</button>
+      <div class="section-title">Light Position</div>
+      X: <input id="lightSlideX" type="range" min="0" max="300" value="100">
+      Y: <input id="lightSlideY" type="range" min="0" max="300" value="150">
+      Z: <input id="lightSlideZ" type="range" min="0" max="300" value="120">
 
-  <p><b>Keyboard Controls:</b></p>
-  W/A/S/D: Move<br>
-  Q/E: Rotate<br>
-  Z/X: Move Up/Down
+      <div class="section-title">Light Color</div>
+      R: <input id="lightRed" type="range" min="0" max="255" value="255">
+      G: <input id="lightGreen" type="range" min="0" max="255" value="255">
+      B: <input id="lightBlue" type="range" min="0" max="255" value="255">
 
+      <div class="section-title">Spotlight Position</div>
+      X: <input id="SpotlightSlideX" type="range" min="0" max="300" value="100">
+      Y: <input id="SpotlightSlideY" type="range" min="0" max="300" value="150">
+      Z: <input id="SpotlightSlideZ" type="range" min="0" max="300" value="120">
+    </div>
+
+    <!-- Right: Scene controls + Keyboard Help -->
+    <div class="ui-column">
+      <h2>Scene</h2>
+      <button id="CallTheSheep">Toggle Sheep</button>
+      <button id="Animate">Toggle Sheep Animation</button>
+      <button id="Random">Toggle Maze</button>
+      <button id="Map_1">Toggle Map</button>
+
+      <div class="section-title">Keyboard Controls</div>
+      <ul>
+        <li><b>W</b>: Move Forward</li>
+        <li><b>A</b>: Move Left</li>
+        <li><b>S</b>: Move Backward</li>
+        <li><b>D</b>: Move Right</li>
+        <li><b>Q</b>: Turn Left</li>
+        <li><b>E</b>: Turn Right</li>
+        <li><b>Z</b>: Move Up</li>
+        <li><b>X</b>: Move Down</li>
+        <li><b>Mouse Drag</b>: Look Around</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="lib/webgl-utils.js"></script>
   <script src="lib/webgl-debug.js"></script>
   <script src="lib/cuon-utils.js"></script>
   <script src="lib/cuon-matrix-cse160.js"></script>
 
-  <script src="Camera.js"></script>
-  <script src="Cube.js"></script>
-  <script src="Triangle.js"></script>
   <script src="RenderAnimal.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Point.js"></script>
   <script src="sphere.js"></script>
-
+  <script src="Cube.js"></script>
+  <script src="Camera.js"></script>
   <script src="asg4.js"></script>
 </body>
 </html>
