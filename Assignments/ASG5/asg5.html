@@ -84,30 +84,51 @@
     </div>
 
     <div id="controls">
-      <h2>Scene Controls</h2>
-      <button id="toggleZombie">Toggle Zombie</button>
-      <button id="addZombie">Add New Zombie</button>
-      <button id="toggleSkyboxBtn">Toggle Skybox</button>
+  <h2>Scene Controls</h2>
+  <button id="toggleZombie">Toggle Zombie</button>
+  <button id="addZombie">Add New Zombie</button>
+  <button id="toggleSkyboxBtn">Toggle Skybox</button>
+  <button id="toggleFollow">Toggle Follow</button>
 
-      <button id="toggleFollow">Toggle Follow</button>
+  <h2>Light Settings (Point Light)</h2>
+  <div class="slider-container">
+    <label for="lightX">Light X</label>
+    <input type="range" id="lightX" min="-10" max="10" step="0.1" value="5">
+  </div>
+  <div class="slider-container">
+    <label for="lightY">Light Y</label>
+    <input type="range" id="lightY" min="-10" max="10" step="0.1" value="10">
+  </div>
+  <div class="slider-container">
+    <label for="lightZ">Light Z</label>
+    <input type="range" id="lightZ" min="-10" max="10" step="0.1" value="5">
+  </div>
 
+  <h2>Ambient Light</h2>
+  <div class="slider-container">
+    <label for="ambientColor">Color</label>
+    <input type="color" id="ambientColor" value="#ffffff">
+  </div>
+  <div class="slider-container">
+    <label for="ambientIntensity">Intensity</label>
+    <input type="range" id="ambientIntensity" min="0" max="5" step="0.1" value="0.4">
+  </div>
 
-      <h2>Light Settings</h2>
-      <div class="slider-container">
-        <label for="lightX">Light X</label>
-        <input type="range" id="lightX" min="-10" max="10" step="0.1" value="5">
-      </div>
-      <div class="slider-container">
-        <label for="lightY">Light Y</label>
-        <input type="range" id="lightY" min="-10" max="10" step="0.1" value="10">
-      </div>
-      <div class="slider-container">
-        <label for="lightZ">Light Z</label>
-        <input type="range" id="lightZ" min="-10" max="10" step="0.1" value="5">
-      </div>
+  <h2>Hemisphere Light</h2>
+  <div class="slider-container">
+    <label for="skyColor">Sky Color</label>
+    <input type="color" id="skyColor" value="#b1e1ff">
+  </div>
+  <div class="slider-container">
+    <label for="groundColor">Ground Color</label>
+    <input type="color" id="groundColor" value="#b97a20">
+  </div>
+  <div class="slider-container">
+    <label for="hemiIntensity">Intensity</label>
+    <input type="range" id="hemiIntensity" min="0" max="5" step="0.1" value="1">
+  </div>
+</div>
 
-      
-    </div>
   </div>
 
   <script type="module" src="asg5.js"></script>

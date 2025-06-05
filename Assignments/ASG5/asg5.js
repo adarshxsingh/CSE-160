@@ -45,6 +45,11 @@ mtlLoader.load('male02.mtl', (materials) => {
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(ambientLight);
 
+// === Hemisphere Light ===
+const hemiLight = new THREE.HemisphereLight(0xb1e1ff, 0xb97a20, 1); // sky, ground, intensity
+scene.add(hemiLight);
+
+
 // === Directional Light (like sunlight) ===
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(100, 200, 100);
@@ -170,6 +175,12 @@ let zombieVisible = true;
 document.getElementById('toggleZombie').addEventListener('click', () => {
   zombieVisible = !zombieVisible;
 });
+
+
+
+
+
+
 
 document.getElementById('addZombie').addEventListener('click', () => {
   const x = Math.floor(Math.random() * 50) - 25;
@@ -412,4 +423,40 @@ let skyboxVisible = true;
 document.getElementById('toggleSkyboxBtn').onclick = () => {
   skyboxEnabled = !skyboxEnabled;
   scene.background = skyboxEnabled ? skyboxTexture : null;
+};
+
+
+window.onload = () => {
+  // === Camera Control Events ===
+  document.getElementById('fov').addEventListener('input', e => {
+    camera.fov = parseFloat(e.target.value);
+    camera.updateProjectionMatrix();
+  });
+  document.getElementById('near').addEventListener('input', e => {
+    camera.near = parseFloat(e.target.value);
+    camera.updateProjectionMatrix();
+  });
+  document.getElementById('far').addEventListener('input', e => {
+    camera.far = parseFloat(e.target.value);
+    camera.updateProjectionMatrix();
+  });
+
+  // === Ambient Light Control Events ===
+  document.getElementById('ambientColor').addEventListener('input', e => {
+    ambientLight.color.set(e.target.value);
+  });
+  document.getElementById('ambientIntensity').addEventListener('input', e => {
+    ambientLight.intensity = parseFloat(e.target.value);
+  });
+
+  // === Hemisphere Light Control Events ===
+  document.getElementById('skyColor').addEventListener('input', e => {
+    hemiLight.color.set(e.target.value);
+  });
+  document.getElementById('groundColor').addEventListener('input', e => {
+    hemiLight.groundColor.set(e.target.value);
+  });
+  document.getElementById('hemiIntensity').addEventListener('input', e => {
+    hemiLight.intensity = parseFloat(e.target.value);
+  });
 };
