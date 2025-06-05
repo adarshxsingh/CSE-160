@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import { Camera } from './Camera.js';
 import { Zombie } from './RenderZombie.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
+
 
 // === Canvas & Renderer ===
 const canvas = document.querySelector('#c');
@@ -11,7 +17,34 @@ renderer.setSize(600, 600);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x222222);
 
-// === Bright Light ===
+// === Add a custom 3D model ===
+const mtlLoader = new MTLLoader();
+mtlLoader.setPath('models/');
+mtlLoader.load('male02.mtl', (materials) => {
+  materials.preload();
+
+  const objLoader = new OBJLoader();
+  objLoader.setMaterials(materials);
+  objLoader.setPath('models/');
+  objLoader.load('male02.obj', (object) => {
+    object.position.set(0, 0, 0);
+    object.scale.set(0.6, 0.6, 0.6);
+    scene.add(object);
+  });
+});
+
+
+
+// === Ambient Light (softens shadows) ===
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+
+// === Directional Light (like sunlight) ===
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(100, 200, 100);
+scene.add(directionalLight);
+
+// === Point Light ===
 const pointLight = new THREE.PointLight(0xffffff, 2.5, 300);
 pointLight.position.set(5, 30, 5);
 scene.add(pointLight);
@@ -28,6 +61,15 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 let zombieFollowEnabled = true;
 
 const myCam = new Camera();
+myCam.eye.elements = [0, 100, 150];     // Position: high and back
+myCam.at.elements = [0, 0, 0];          // Looking toward center of the world
+
+// === Mouse Scroll ===
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false;
+controls.enablePan = false;
+
+
 function updateThreeCamera() {
   const eye = myCam.eye.elements;
   const at = myCam.at.elements;
@@ -50,22 +92,32 @@ ground.rotation.x = -Math.PI / 2;
 ground.position.y = 0;
 scene.add(ground);
 
+
+let skyboxTexture = null;
+let skyboxEnabled = true;
+
 // === Skybox (LARGER and around everything) ===
-const skyboxSize = 500;
-const skyTexture = textureLoader.load('sky.png');
-skyTexture.mapping = THREE.EquirectangularReflectionMapping;
-const skyGeometry = new THREE.BoxGeometry(skyboxSize, skyboxSize, skyboxSize);
-const skyMaterial = new THREE.MeshBasicMaterial({
-  map: skyTexture,
-  side: THREE.BackSide
-});
-const skybox = new THREE.Mesh(skyGeometry, skyMaterial);
-scene.add(skybox);
+// === Cubemap Skybox ===
+const loader = new THREE.CubeTextureLoader();
+loader.setPath('textures/');
+
+skyboxTexture = loader.load([
+  'posx.jpg', 'negx.jpg',
+  'posy.jpg', 'negy.jpg',
+  'posz.jpg', 'negz.jpg'
+]);
+
+scene.background = skyboxTexture;
+
+
+
+
+
 
 
 // === Dirt Pile in Middle ===
 const dirtPile = new THREE.Group();
-const pileSize = 5;
+const pileSize = 10;
 for (let x = -1; x <= 1; x++) {
   for (let z = -1; z <= 1; z++) {
     for (let y = 0; y <= 2; y++) {
@@ -100,8 +152,10 @@ let zombies = [];
 let zombieCount = 0;
 
 const initialZombie = new Zombie(0, 0, -5);
+initialZombie.render(scene); // force render to attach body parts
 zombies.push(initialZombie);
 scene.add(initialZombie.group);
+
 
 let zombieVisible = true;
 document.getElementById('toggleZombie').addEventListener('click', () => {
@@ -163,6 +217,52 @@ scene.add(shapesGroup);
 
 
 
+// === Animated Diamond with Texture and Light ===
+const floatGroup = new THREE.Group();
+const texturedGeometry = new THREE.OctahedronGeometry(8);  // Diamond shape
+const texturedMaterial = new THREE.MeshStandardMaterial({ map: grassTexture });
+const floatingObject = new THREE.Mesh(texturedGeometry, texturedMaterial);
+floatingObject.position.set(0, 60, 0); // Higher Y starting point
+floatGroup.add(floatingObject);
+
+// Add glowing light at its center
+const floatingLight = new THREE.PointLight(0x00ffcc, 2, 100);
+floatingLight.position.set(0, 0, 0);
+floatGroup.add(floatingLight);
+
+scene.add(floatGroup);
+
+
+
+
+// === Spinning Tetrahedron (Triangle Shape) ===
+const triangleGroup = new THREE.Group();
+const triangleGeometry = new THREE.TetrahedronGeometry(25);
+const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xff00ff });
+const triangleObject = new THREE.Mesh(triangleGeometry, triangleMaterial);
+triangleObject.position.set(100, 15, -100);  // Different spot on the map
+triangleGroup.add(triangleObject);
+scene.add(triangleGroup);
+
+
+
+
+
+// === Spinning Textured Cube ===
+const texturedCubeGroup = new THREE.Group();
+const cubeGeometry = new THREE.BoxGeometry(15, 15, 15);
+const cubeMaterial = new THREE.MeshStandardMaterial({ map: grassTexture });
+const texturedCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+texturedCube.position.set(-120, 40, 100); // Opposite corner from diamond/triangle
+texturedCubeGroup.add(texturedCube);
+scene.add(texturedCubeGroup);
+
+
+
+
+
+
+
 
 // === Follow Logic ===
 function followPlayer(zombie, cameraPos) {
@@ -176,10 +276,59 @@ function followPlayer(zombie, cameraPos) {
   zombie.z += direction.z * 0.02;
 }
 
+
+
+
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.load(
+  'Adarsh_Singh-Lab4.glb', // Replace with your actual filename
+  function (gltf) {
+    const model = gltf.scene;
+    model.position.set(-50, 40, -50);   // Place it on the map
+    model.scale.set(10, 10, 10);       // Scale it up to match scene size
+    scene.add(model);
+  },
+  undefined,
+  function (error) {
+    console.error('An error occurred loading the 3D model:', error);
+  }
+);
+
+
+
+
+
+
+
 // === Render Loop ===
 function render(time) {
   time *= 0.001;
-  updateThreeCamera();
+  //updateThreeCamera();
+
+
+  // Animate floating object
+  const floatY = Math.sin(time * 2) * 7 + 100;
+  floatingObject.position.y = floatY;
+  floatingObject.rotation.y += 0.01;
+
+
+
+
+  // Animate triangle object
+  triangleObject.rotation.y += 0.03;
+  triangleObject.rotation.x += 0.01;
+
+
+  
+  // Animate spinning textured cube
+  texturedCube.rotation.y += 0.06;
+  texturedCube.rotation.x += 0.01;
+
+
+  
+
+
 
   if (zombieFollowEnabled) {
     const cameraPos = new THREE.Vector3(
@@ -207,8 +356,17 @@ function render(time) {
     cylinders[2].rotation.y += 0.05;
   }
 
+
+  for (let zombie of zombies) {
+    zombie.time += 0.016; // Animate arms ~60 FPS
+    zombie.render(scene); // Render and update pose
+  }
+
   renderer.render(scene, camera);
   requestAnimationFrame(render);
+
+  controls.update();
+
 }
 requestAnimationFrame(render);
 
@@ -228,11 +386,7 @@ document.getElementById('toggleFollow').addEventListener('click', () => {
 });
 
 let skyboxVisible = true;
-document.getElementById('toggleSkybox').addEventListener('click', () => {
-  skyboxVisible = !skyboxVisible;
-  if (skyboxVisible) {
-    scene.add(skybox);
-  } else {
-    scene.remove(skybox);
-  }
-});
+document.getElementById('toggleSkyboxBtn').onclick = () => {
+  skyboxEnabled = !skyboxEnabled;
+  scene.background = skyboxEnabled ? skyboxTexture : null;
+};
