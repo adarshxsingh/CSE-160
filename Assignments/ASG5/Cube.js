@@ -1,113 +1,90 @@
 // Adarsh Singh
 // asing209@ucsc.edu
 // 1930592
-// Assignment 4: Lighting (Medium)
+// Assignment 5: Exploring a High-Level Graphics Library (Medium)
 
 // Cube.js
 
-import { Matrix4, Vector3 } from './lib/cuon-matrix-cse160.js';
+import { Matrix4 } from './lib/cuon-matrix-cse160.js';
 
 
+class Cube {
+  constructor() {
+    this.type = 'cube';
+    this.color = [1.0, 1.0, 1.0, 1.0];      // Default white
+    this.matrix = new Matrix4();           // Transformation matrix
+    this.textureNum = -2;                  // Texture flag
+  }
 
-class Cube{
-    constructor() {
-        this.type = 'cube';
-        this.color = [1.0, 1.0, 1.0, 1.0];
-        this.matrix = new Matrix4();
-        this.textureNum = -2;
-        this.vertex = [0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0,
-            0.0,0.0,0.0, 1.0,1.0,0.0, 0.0,1.0,0.0,
-            0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0,
-            0.0,1.0,0.0,  1.0,1.0,1.0,  1.0,1.0,0.0,
-            0.0,0.0,0.0,  0.0,0.0,1.0,  1.0,0.0,1.0,
-            0.0,0.0,0.0,  1.0,0.0,1.0,  1.0,0.0,0.0,
-            0.0,0.0,1.0, 1.0,1.0,1.0, 1.0,0.0,1.0,
-            0.0,0.0,1.0, 0.0,1.0,1.0, 1.0,1.0,1.0,
-            0.0,0.0,0.0,  0.0,1.0,1.0,  0.0,1.0,0.0,
-            0.0,0.0,0.0,  0.0,1.0,1.0,  0.0,0.0,1.0,
-            1.0,0.0,0.0,  1.0,1.0,1.0,  1.0,1.0,0.0,
-            1.0,0.0,0.0,  1.0,1.0,1.0,  1.0,0.0,1.0
-        ];
-    }
+  // === Draw the cube face-by-face with different shading ===
+  drawCube() {
+    gl.uniform1i(u_whichTexture, this.textureNum);
+    
+    gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
 
-    drawCube(){
-        var rgba = this.color;
+    // Face 1 (Front)
+    this.#setColor(1.0);
+    drawTriangle3DUV([0,0,0, 1,1,0, 1,0,0], [0,0, 1,1, 1,0]);
+    drawTriangle3DUV([0,0,0, 1,1,0, 0,1,0], [0,0, 1,1, 0,1]);
 
-        gl.uniform1i(u_whichTexture, this.textureNum);
-        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
-        gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
+    // Face 2 (Top)
+    this.#setColor(0.7);
+    drawTriangle3DUV([0,1,0, 0,1,1, 1,1,1], [0,0, 0,1, 1,1]);
+    drawTriangle3DUV([0,1,0, 1,1,1, 1,1,0], [0,0, 1,1, 1,0]);
 
-        drawTriangle3DUV([0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0],[0,0, 1,1, 1,0]);
-        drawTriangle3DUV([0.0,0.0,0.0, 1.0,1.0,0.0, 0.0,1.0,0.0],[0,0, 1,1, 0,1]);
+    // Face 3 (Bottom)
+    this.#setColor(0.6);
+    drawTriangle3DUV([0,0,0, 0,0,1, 1,0,1], [0,0, 0,1, 1,1]);
+    drawTriangle3DUV([0,0,0, 1,0,1, 1,0,0], [0,0, 1,1, 1,0]);
 
-        gl.uniform4f(u_FragColor, rgba[0]*.7, rgba[1]*.7, rgba[2]*.7, rgba[3]);
+    // Face 4 (Back)
+    this.#setColor(0.9);
+    drawTriangle3DUV([0,0,1, 1,1,1, 1,0,1], [0,0, 1,1, 1,0]);
+    drawTriangle3DUV([0,0,1, 0,1,1, 1,1,1], [0,0, 0,1, 1,1]);
 
+    // Face 5 (Left)
+    this.#setColor(0.8);
+    drawTriangle3DUV([0,0,0, 0,1,1, 0,1,0], [0,0, 1,1, 1,0]);
+    drawTriangle3DUV([0,0,0, 0,1,1, 0,0,1], [0,0, 1,1, 0,1]);
 
-        drawTriangle3DUV([0.0,1.0,0.0,  0.0,1.0,1.0,  1.0,1.0,1.0],[0,0, 0,1, 1,1])
-        drawTriangle3DUV([0.0,1.0,0.0,  1.0,1.0,1.0,  1.0,1.0,0.0],[0,0, 1,1, 1,0]);
+    // Face 6 (Right)
+    drawTriangle3DUV([1,0,0, 1,1,1, 1,1,0], [0,0, 1,1, 1,0]);
+    drawTriangle3DUV([1,0,0, 1,1,1, 1,0,1], [0,0, 1,1, 0,1]);
+  }
 
+  // === Optimized full-draw for performance ===
+  drawCubeFast() {
+    gl.uniform1i(u_whichTexture, this.textureNum);
+    gl.uniform4f(u_FragColor, ...this.color);
+    gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
 
-        gl.uniform4f(u_FragColor, rgba[0]*.6, rgba[1]*.6, rgba[2]*.6, rgba[3]);
+    const vertices = [].concat(
+      [0,0,0, 1,1,0, 1,0,0,     0,0,0, 0,1,0, 1,1,0], // front
+      [0,0,1, 1,1,1, 1,0,1,     0,0,1, 0,1,1, 1,1,1], // back
+      [0,1,0, 0,1,1, 1,1,1,     0,1,0, 1,1,1, 1,1,0], // top
+      [0,0,0, 0,0,1, 1,0,1,     0,0,0, 1,0,1, 1,0,0], // bottom
+      [1,1,0, 1,1,1, 1,0,0,     1,0,0, 1,1,1, 1,0,1], // right
+      [0,1,0, 0,1,1, 0,0,0,     0,0,0, 0,1,1, 0,0,1]  // left
+    );
 
-        drawTriangle3DUV([0.0,0.0,0.0,  0.0,0.0,1.0,  1.0,0.0,1.0],[0,0, 0,1, 1,1]);
-        drawTriangle3DUV([0.0,0.0,0.0,  1.0,0.0,1.0,  1.0,0.0,0.0],[0,0, 1,1, 1,0]);
+    const uvs = Array(6).fill([0,0, 1,1, 1,0,  0,0, 0,1, 1,1]).flat();
+    const normals = [].concat(
+      Array(6).fill([0,0,-1]).flat(),
+      Array(6).fill([0,0,1]).flat(),
+      Array(6).fill([0,1,0]).flat(),
+      Array(6).fill([0,-1,0]).flat(),
+      Array(6).fill([1,0,0]).flat(),
+      Array(6).fill([-1,0,0]).flat()
+    );
 
-        gl.uniform4f(u_FragColor, rgba[0]*.9, rgba[1]*.9, rgba[2]*.9, rgba[3]);
+    drawTriangle3DUVNormal(vertices, uvs, normals);
+  }
 
-        drawTriangle3DUV([0.0,0.0,1.0, 1.0,1.0,1.0, 1.0,0.0,1.0],[0,0, 1,1, 1,0])
-        drawTriangle3DUV([0.0,0.0,1.0, 0.0,1.0,1.0, 1.0,1.0,1.0],[0,0, 0,1, 1,1]);
-
-        gl.uniform4f(u_FragColor, rgba[0]*.8, rgba[1]*.8, rgba[2]*.8, rgba[3]);
-
-        drawTriangle3DUV([0.0,0.0,0.0,  0.0,1.0,1.0,  0.0,1.0,0.0],[0,0, 1,1, 1,0]);
-        drawTriangle3DUV([0.0,0.0,0.0,  0.0,1.0,1.0,  0.0,0.0,1.0],[0,0, 1,1, 0,1]);
-        drawTriangle3DUV([1.0,0.0,0.0,  1.0,1.0,1.0,  1.0,1.0,0.0],[0,0, 1,1, 1,0]);
-        drawTriangle3DUV([1.0,0.0,0.0,  1.0,1.0,1.0,  1.0,0.0,1.0],[0,0, 1,1, 0,1]);
-
-    }
-
-    drawCubeFast(){
-        var rgba = this.color;
-
-        gl.uniform1i(u_whichTexture, this.textureNum);
-        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
-        gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
-
-
-        let allVert = [];
-        allVert = allVert.concat(
-            [0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0,     0,0,0, 0,1,0, 1,1,0]);
-        allVert = allVert.concat(
-            [0,0,1, 1,1,1, 1,0,1,   0,0,1, 0,1,1, 1,1,1]);
-        allVert = allVert.concat(
-            [0,1,0, 0,1,1, 1,1,1,   0,1,0, 1,1,1, 1,1,0]);
-        allVert = allVert.concat(
-            [0,0,0, 0,0,1, 1,0,1,   0,0,0, 1,0,1, 1,0,0]);
-        allVert = allVert.concat(
-            [1,1,0, 1,1,1, 1,0,0,   1,0,0, 1,1,1, 1,0,1]);
-        allVert = allVert.concat(
-            [0,1,0, 0,1,1, 0,0,0,   0,0,0, 0,1,1, 0,0,1]);
-
-
-
-        let allUV = [];
-        allUV = allUV.concat([0,0, 1,1, 1,0,    0,0, 0,1, 1,1]);
-        allUV = allUV.concat([0,0, 1,1, 1,0,    0,0, 0,1, 1,1]);
-        allUV = allUV.concat([0,0, 0,1, 1,1,    0,0, 1,1, 1,0]);
-        allUV = allUV.concat([0,0, 0,1, 1,1,    0,0, 1,1, 1,0]);
-        allUV = allUV.concat([0,0, 0,1, 1,1,    0,0, 1,1, 1,0]);
-        allUV = allUV.concat([0,0, 0,1, 1,1,    0,0, 1,1, 1,0]);
-
-        let allNorm = [];
-        allNorm = allNorm.concat([0,0,-1, 0,0,-1, 0,0,-1,    0,0,-1, 0,0,-1, 0,0,-1]);
-        allNorm = allNorm.concat([0,0,1, 0,0,1, 0,0,1,    0,0,1, 0,0,1, 0,0,1]);
-        allNorm = allNorm.concat([0,1,0, 0,1,0, 0,1,0,    0,1,0, 0,1,0, 0,1,0]);
-        allNorm = allNorm.concat([0,-1,0, 0,-1,0, 0,-1,0,    0,-1,0, 0,-1,0, 0,-1,0]);
-        allNorm = allNorm.concat([1,0,0, 1,0,0, 1,0,0,    1,0,0, 1,0,0, 1,0,0]);
-        allNorm = allNorm.concat([-1,0,0, -1,0,0, -1,0,0,    -1,0,0, -1,0,0, -1,0,0]);
-
-        drawTriangle3DUVNormal(allVert, allUV, allNorm);
-    }
+  // === Internal helper to apply face shading ===
+  #setColor(scale = 1.0) {
+    const [r, g, b, a] = this.color;
+    gl.uniform4f(u_FragColor, r * scale, g * scale, b * scale, a);
+  }
 }
 
 export { Cube };

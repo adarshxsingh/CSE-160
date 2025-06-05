@@ -1,3 +1,8 @@
+// Adarsh Singh
+// asing209@ucsc.edu
+// 1930592
+// Assignment 5: Exploring a High-Level Graphics Library (Medium)
+
 import * as THREE from 'three';
 import { Camera } from './Camera.js';
 import { Zombie } from './RenderZombie.js';
@@ -308,9 +313,18 @@ function render(time) {
 
 
   // Animate floating object
-  const floatY = Math.sin(time * 2) * 7 + 100;
-  floatingObject.position.y = floatY;
-  floatingObject.rotation.y += 0.01;
+  const radius = 5;
+  const floatY = Math.sin(time * 2) * 12 + 120;
+  const angle = time * 0.5; // speed of orbit
+
+  const x = Math.cos(angle) * radius + 5; // offset to center around (5, *, 5)
+  const z = Math.sin(angle) * radius + 5;
+
+  floatingObject.position.set(x, floatY, z);
+  const glowLight = new THREE.PointLight(0x00ff00, 3, 20); // color, intensity, range
+  floatingObject.add(glowLight);
+
+
 
 
 

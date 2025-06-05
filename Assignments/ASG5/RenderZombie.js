@@ -1,3 +1,8 @@
+// Adarsh Singh
+// asing209@ucsc.edu
+// 1930592
+// Assignment 5: Exploring a High-Level Graphics Library (Medium)
+
 import * as THREE from 'three';
 
 class Zombie {
