@@ -14,6 +14,7 @@ class Zombie {
     this.time = time;
 
     this.group = new THREE.Group(); // Root group for the whole zombie
+    this.group.scale.set(30, 30, 30); // Try 6x larger zombie
 
     this.initZombie(); // Build zombie parts
   }
@@ -94,6 +95,13 @@ class Zombie {
     );
     rightLeg.position.set(scale * 0.7, scale * 0.5, 0);
     this.group.add(rightLeg);
+
+    const bodyMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00ff00,
+      emissive: 0x00ff00,
+      emissiveIntensity: 1.5
+    });
+
   }
 
   render(scene) {

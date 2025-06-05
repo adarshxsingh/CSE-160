@@ -16,7 +16,8 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // === Canvas & Renderer ===
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(600, 600);
+renderer.setSize(window.innerWidth, window.innerHeight);
+
 
 // === Scene ===
 const scene = new THREE.Scene();
@@ -156,10 +157,13 @@ document.addEventListener('keydown', (event) => {
 let zombies = [];
 let zombieCount = 0;
 
-const initialZombie = new Zombie(0, 0, -5);
-initialZombie.render(scene); // force render to attach body parts
+const initialZombie = new Zombie(10, 0, 10); // off to the side
 zombies.push(initialZombie);
 scene.add(initialZombie.group);
+
+// Build zombie body immediately
+initialZombie.render(scene);
+
 
 
 let zombieVisible = true;
@@ -321,9 +325,6 @@ function render(time) {
   const z = Math.sin(angle) * radius + 5;
 
   floatingObject.position.set(x, floatY, z);
-  const glowLight = new THREE.PointLight(0x00ff00, 3, 20); // color, intensity, range
-  floatingObject.add(glowLight);
-
 
 
 
@@ -341,19 +342,25 @@ function render(time) {
 
 
   
+if (zombieFollowEnabled) {
+  const camPos = new THREE.Vector3(
+    myCam.eye.elements[0],
+    myCam.eye.elements[1],
+    myCam.eye.elements[2]
+  );
 
+  for (let z of zombies) {
+    const zPos = new THREE.Vector3().setFromMatrixPosition(z.group.matrixWorld);
+    const direction = new THREE.Vector3().subVectors(camPos, zPos).normalize();
 
-
-  if (zombieFollowEnabled) {
-    const cameraPos = new THREE.Vector3(
-      myCam.eye.elements[0],
-      myCam.eye.elements[1],
-      myCam.eye.elements[2]
-    );
-    for (let z of zombies) {
-      followPlayer(z, cameraPos);
-    }
+    // Move zombie toward camera slowly
+    z.group.position.addScaledVector(direction, 0.50);
   }
+}
+
+
+
+  
 
   if (zombieVisible) {
     for (let z of zombies) {
@@ -380,6 +387,8 @@ function render(time) {
   requestAnimationFrame(render);
 
   controls.update();
+  console.log('Zombies in scene:', zombies.length);
+
 
 }
 requestAnimationFrame(render);
