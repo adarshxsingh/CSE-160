@@ -5,12 +5,16 @@
 
 // Camera.js
 
+import { Vector3, Matrix4 } from './lib/cuon-matrix-cse160.js';
+
+
 class Camera{
-    constructor(){
-        this.eye = new Vector3([10,0.6,3]);
-        this.at  = new Vector3([10,0,100]);
-        this.up  = new Vector3([0,1,0]);
+    constructor() {
+        this.eye = new Vector3([5, 5, 12]);  // start above and behind terrain
+        this.at  = new Vector3([5, 0, 5]);   // look toward center of terrain
+        this.up  = new Vector3([0, 1, 0]);
     }
+
 
     forward(){
         var atCopy  = new Vector3(this.at.elements);
@@ -83,3 +87,5 @@ class Camera{
     }
 
 }
+
+export { Camera };

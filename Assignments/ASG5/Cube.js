@@ -5,6 +5,10 @@
 
 // Cube.js
 
+import { Matrix4, Vector3 } from './lib/cuon-matrix-cse160.js';
+
+
+
 class Cube{
     constructor() {
         this.type = 'cube';
@@ -105,3 +109,5 @@ class Cube{
         drawTriangle3DUVNormal(allVert, allUV, allNorm);
     }
 }
+
+export { Cube };

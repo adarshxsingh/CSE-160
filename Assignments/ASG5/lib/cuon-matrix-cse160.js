@@ -876,3 +876,6 @@ class Matrix4 {
       return this.dropShadow([normX, normY, normZ, -a], [lightX, lightY, lightZ, 0]);
     };
 }
+
+
+export { Vector3, Matrix4 };
